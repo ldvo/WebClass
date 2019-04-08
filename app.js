@@ -42,6 +42,12 @@ app.get('/met', function(req, res) {
   });
 });
 
+app.get('*', function(req, res) {
+  return res.send({
+    error: 'Error: Invalid route.',
+  });
+});
+
 app.listen(port, () => {
   console.log('Listening on port ' + port);
 });
