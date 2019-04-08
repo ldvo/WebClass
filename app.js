@@ -1,5 +1,12 @@
 const request = require('request');
 const credentials = require('./credentials');
+const path = require('path');
+const express = require('express');
+
+const app = express();
+const publicDir = path.join(__dirname, 'public');
+
+app.use(express.static(publicDir));
 
 function getWeather(latitude, longitude, callback) {
   const darkSkyUrl =
@@ -41,19 +48,35 @@ function getCityData(city, callback) {
   });
 }
 
-getCityData('Monterrey', (err, coordinates) => {
-  if (err) {
-    console.log(err);
-    return;
+app.get('/weather', function(req, res) {
+  if( !req.query.search ) {
+    return res.send({
+      error: 'Error: Missing city.',
+    })
   }
-  getWeather(coordinates[1], coordinates[0], (err, currentWeather) => {
+  getCityData(req.query.search, (err, coordinates) => {
     if (err) {
-      console.log(err);
-      return;
+      return res.send({
+        error: err,
+      })
     }
-    const message = `${currentWeather.summary}. Actualmente esta a ${
-        currentWeather.temperature}°C. Hay ${
-        currentWeather.precipProbability}% de probabilidad de lluvia.`
-    console.log(message);
-  })
+    getWeather(coordinates[1], coordinates[0], (err, currentWeather) => {
+      if (err) {
+        return res.send({
+          error: err,
+        })
+      }
+      const message = `${currentWeather.summary}. Actualmente esta a ${
+          currentWeather.temperature}°C. Hay ${
+          currentWeather.precipProbability}% de probabilidad de lluvia.`
+          return res.send({
+            location: req.query.search,
+            weather: message,
+          })
+    })
+  });
+});
+
+app.listen(3000, () => {
+  console.log('listening on port 3000')
 });
