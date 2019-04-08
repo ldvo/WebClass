@@ -1,16 +1,24 @@
 {
-  "name": "lab4",
+  "name": "WebClass",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ldvo/WebClass.git"
+  },
+  "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ldvo/WebClass/issues"
+  },
+  "homepage": "https://github.com/ldvo/WebClass#readme",
   "dependencies": {
     "express": "^4.16.4",
-    "path": "^0.12.7"
+    "request": "^2.88.0"
   }
 }

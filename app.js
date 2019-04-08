@@ -1,23 +1,47 @@
-const path = require('path');
 const express = require('express');
+const met = require('./met');
 
 const app = express();
-const publicDir = path.join(__dirname, 'public');
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 
-app.use(express.static(publicDir));
-
-app.get('/weather', function(req, res) {
-  if( !req.query.search ) {
+app.get('/students/:id', function(req, res) {
+  if (req.params.id !== 'A00818257') {
     return res.send({
-      error: 'Error: Missing city.',
-    })
+      error: 'Error: ID not found.',
+    });
   }
   return res.send({
-    city: req.query.search,
-  })
+    id: req.params.id,
+    fullname: 'Luis Daniel Villarreal Ortega',
+    nickname: 'luisvo',
+    age: 22
+  });
+});
+
+app.get('/met', function(req, res) {
+  if (!req.query.search) {
+    return res.send({
+      error: 'Error: Missing search query.',
+    });
+  }
+  met.searchRequest(req.query.search, (error, objectId) => {
+    if (error) {
+      return res.send({
+        error: error,
+      })
+    }
+    met.objectRequest(objectId, (error, response) => {
+      if (error) {
+        return res.send({
+          error: error,
+        })
+      }
+      response = Object.assign({searchTerm: req.query.search}, response);
+      return res.send(response);
+    })
+  });
 });
 
 app.listen(port, () => {
-  console.log('listening on port 3000')
+  console.log('Listening on port ' + port);
 });
